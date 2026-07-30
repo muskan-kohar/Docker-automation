@@ -1,8 +1,0 @@
-#this is the docker file for the backend1
-FROM python:3.11-slim
-
-WORKDIR /Ring
-#COPY requirements.txt /Ring/
-COPY backend_server1.py /Ring/
-
-CMD ["python3", "backend_server1.py"]

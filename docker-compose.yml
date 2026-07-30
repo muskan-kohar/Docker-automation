@@ -1,0 +1,20 @@
+services:
+ nginx:
+  build: ./nginx
+  ports:
+   - "8080:80"
+  depends_on:
+   - backend_server1
+   - backend_server2
+   - backend_server3
+
+ backend_server1:
+  build: ./backend1
+ backend_server2:
+  build: ./backend2
+ backend_server3:
+  build: ./backend3
+
+
+
+      

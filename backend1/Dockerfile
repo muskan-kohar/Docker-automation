@@ -3,6 +3,6 @@ FROM python:3.11-slim
 
 WORKDIR /Ring
 #COPY requirements.txt /Ring/
-COPY backend_server1.py /Ring/
+COPY backend_server1.py .
 
 CMD ["python3", "backend_server1.py"]

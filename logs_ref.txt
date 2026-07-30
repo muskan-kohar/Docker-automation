@@ -1,0 +1,169 @@
+"Consistent Hashing - System Design
+Last Updated :
+4 May, 2026
+Consistent hashing is a technique used in distributed systems and load balancing to distribute data or requests across multiple servers efficiently. It reduces the amount of re-mapping (rehashing) needed when servers are added or removed, improving scalability and stability.
+
+Servers and requests are mapped onto a virtual hash ring, where each request is assigned to the nearest server in the clockwise direction.
+When servers are added or removed, only a small portion of requests are redistributed, improving scalability and stability.
+Example: In a caching system (like Redis cluster), if a new server is added, only some keys move to the new server instead of reassigning all keys, which improves performance and reduces downtime.
+
+devops_27
+Consistent Hashing
+Note: In consistent hashing, a request is mapped to the first server encountered in the clockwise direction on the hash ring after hashing the request key.
+
+How Requests Are Assigned to Servers
+In consistent hashing, both servers and requests are placed on a virtual ring using a hash function. For any incoming request, the system moves clockwise on the ring and assigns the request to the first server it encounters. This ensures a balanced and predictable distribution of requests.
+
+Example: Imagine a hash ring with three servers placed at different positions: Node 1, Node 2, and Node 5. If a request is hashed to a position between Node 1 and Node 2, it will be handled by Node 2 (the next server in the clockwise direction). If Node 2 goes down, the same request will now be handled by Node 5, minimizing redistribution of other requests.
+
+devops_28
+Mapping in the Hashing
+Issues with Traditional Hashing Methods
+Here are some key issues with traditional hashing methods explained in easy language:
+
+
+
+Uneven Distribution of Data: Data is not evenly spread across servers, causing some servers to be overloaded while others remain underutilized.
+Scalability Problems: When servers are added or removed, most of the data needs to be rehashed and redistributed, leading to delays and inefficiency.
+Inflexibility with Changing Servers: Traditional hashing does not adapt well to scaling up or down, requiring large-scale data movement.
+Poor Node Failure Handling: If a server fails, its data becomes unavailable until it is reassigned or the server recovers.
+High Rehashing Overhead: System changes require rehashing of most keys, increasing computational cost and system load.
+Uses
+Consistent hashing is used to efficiently distribute data across servers with minimal re-mapping during changes.
+
+Used in distributed caching systems to store and retrieve data efficiently.
+Helps in load balancing by evenly distributing requests across servers.
+Supports database sharding for better scalability and performance.
+Improves fault tolerance by limiting impact when a node fails.
+Enables easy scaling by adding or removing servers with minimal data movement.
+Phases/Working of Consistent Hashing
+The following are the phases involved in the process of consistent hashing: 
+
+Phase 1: Hash Function Selection: A deterministic hash function is chosen to map both keys and servers to positions on the ring.
+Phase 2: Node Assignment: Servers are placed on a virtual ring, and each key is assigned to the nearest server in the clockwise direction.
+Phase 3: Key Replication: Data is replicated across multiple nodes to ensure availability in distributed systems. If one node fails, other nodes can still serve the data without interruption.
+Phase 4: Node Addition/Removal: When nodes are added or removed, some keys need to be reassigned to maintain balance. Consistent hashing ensures that only a small subset of keys are remapped. This minimizes disruption and improves system stability.
+Phase 5: Load balancing: Consistent hashing helps in distributing the load among the network's nodes. To keep the system balanced and effective when a node is overloaded, portions of its keys can be remapped to other nodes.
+Phase 6: Failure Recovery: If a node fails, the keys that are assigned to it can be remapped to other nodes in the network. This enables data to remain accurate and always available, even in the case of a node failure.
+Example: Let's say we have 5 nodes in the ring and say node 3 fails, then the range of the next server node widens and any request coming in all of this range, goes to the new server node. This shows that due to use of consistent hashing only a small portion of keys are affected.
+
+devops_29
+Node failure
+Virtual Nodes
+To improve load distribution, each physical server is represented by multiple virtual nodes on the hash ring.
+
+Prevents uneven data distribution.
+Improves balancing when servers are limited.
+Commonly used in real-world systems. (e.g., distributed caches)
+Implementation of Consistent Hashing algorithm
+Consistent hashing distributes data across servers efficiently while minimizing data movement when nodes are added or removed.
+
+Step 1: Choose a Hash Function: Select a hash function that produces a uniformly distributed range of hash values. Common choices include MD5, SHA-1, or SHA-256.
+Step 2: Define the Hash Ring: Represent the range of hash values as a ring. This ring should cover the entire possible range of hash values and be evenly distributed.
+Step 3: Assign Nodes to the Ring: Each server is hashed and placed on the ring at a specific position based on its hash value.
+Step 4: Key Mapping: Each key is hashed and mapped onto the ring, then assigned to the nearest server in the clockwise direction.
+Step 5: Node Addition: When a new node is added, it is placed on the ring, and only a small set of nearby keys are reassigned to it.
+Step 6: Node Removal: When a node is removed, its keys are reassigned to the next available node on the ring, ensuring minimal disruption.
+Step 7: Load Balancing: The system monitors node load and redistributes keys if needed to maintain an even distribution."
+
+-- from greeksforgreeks (https://www.geeksforgeeks.org/system-design/consistent-hashing/)
+
+"NGINX Reverse Proxy
+This article describes the basic configuration of a proxy server. You will learn how to pass a request from NGINX to proxied servers over different protocols, modify client request headers that are sent to the proxied server, and configure buffering of responses coming from the proxied servers.
+
+Introduction
+Proxying is typically used to distribute the load among several servers, seamlessly show content from different websites, or pass requests for processing to application servers over protocols other than HTTP.
+
+Passing a Request to a Proxied Server
+When NGINX proxies a request, it:
+
+Sends the request to a specified proxy server
+Fetches the response
+Sends the response back to the client.
+It is possible to proxy requests to an HTTP server (another NGINX server or any other server) or a non-HTTP server (which can run an application developed with a specific framework, such as PHP or Python) using a specified protocol. Supported protocols include FastCGI, uwsgi, SCGI, and memcached.
+
+To pass a request to an HTTP proxied server, the proxy_pass directive is specified inside a location. For example:
+
+nginx
+location /some/path/ {
+    proxy_pass http://www.example.com/link/;
+}
+This example configuration results in passing all requests processed in this location to the proxied server at the specified address. This address can be specified as a domain name or an IP address. The address may also include a port:
+
+nginx
+location ~ \.php {
+    proxy_pass http://127.0.0.1:8000;
+}
+Note that in the first example above, the address of the proxied server is followed by a URI, /link/. If the URI is specified along with the address, it replaces the part of the request URI that matches the location parameter."
+
+- from nginx.com (NGINX Reverse Proxy
+This article describes the basic configuration of a proxy server. You will learn how to pass a request from NGINX to proxied servers over different protocols, modify client request headers that are sent to the proxied server, and configure buffering of responses coming from the proxied servers.
+
+Introduction
+Proxying is typically used to distribute the load among several servers, seamlessly show content from different websites, or pass requests for processing to application servers over protocols other than HTTP.
+
+Passing a Request to a Proxied Server
+When NGINX proxies a request, it:
+
+Sends the request to a specified proxy server
+Fetches the response
+Sends the response back to the client.
+It is possible to proxy requests to an HTTP server (another NGINX server or any other server) or a non-HTTP server (which can run an application developed with a specific framework, such as PHP or Python) using a specified protocol. Supported protocols include FastCGI, uwsgi, SCGI, and memcached.
+
+To pass a request to an HTTP proxied server, the proxy_pass directive is specified inside a location. For example:
+
+nginx
+location /some/path/ {
+    proxy_pass http://www.example.com/link/;
+}
+This example configuration results in passing all requests processed in this location to the proxied server at the specified address. This address can be specified as a domain name or an IP address. The address may also include a port:
+
+nginx
+location ~ \.php {
+    proxy_pass http://127.0.0.1:8000;
+}
+Note that in the first example above, the address of the proxied server is followed by a URI, /link/. If the URI is specified along with the address, it replaces the part of the request URI that matches the location parameter.)
+
+"Writing a Dockerfile
+
+Ask Gordon
+
+Copy Markdown
+
+View Markdown
+
+Explanation
+A Dockerfile is a text-based document that's used to create a container image. It provides instructions to the image builder on the commands to run, files to copy, startup command, and more.
+
+As an example, the following Dockerfile would produce a ready-to-run Python application:
+
+
+FROM python:3.13
+WORKDIR /usr/local/app
+
+# Install the application dependencies
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy in the source code
+COPY src ./src
+EXPOSE 8080
+
+# Setup an app user so the container doesn't run as the root user
+RUN useradd app
+USER app
+
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8080"]
+Common instructions
+Some of the most common instructions in a Dockerfile include:
+
+FROM <image> - this specifies the base image that the build will extend.
+WORKDIR <path> - this instruction specifies the "working directory" or the path in the image where files will be copied and commands will be executed.
+COPY <host-path> <image-path> - this instruction tells the builder to copy files from the host and put them into the container image.
+RUN <command> - this instruction tells the builder to run the specified command.
+ENV <name> <value> - this instruction sets an environment variable that a running container will use.
+EXPOSE <port-number> - this instruction sets configuration on the image that indicates a port the image would like to expose.
+USER <user-or-uid> - this instruction sets the default user for all subsequent instructions.
+CMD ["<command>", "<arg1>"] - this instruction sets the default command a container using this image will run."
+
+-form doc.docker.com (https://docs.docker.com/get-started/docker-concepts/building-images/writing-a-dockerfile/)

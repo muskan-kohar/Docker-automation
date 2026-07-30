@@ -14,10 +14,15 @@ class handle(BaseHTTPRequestHandler):
         if user_id:
             handle.unique_users.add(user_id)
 
-        response = "Hii fron Backend3"
+        response = (
+            f"Backend: {handle.identity}\n"
+            f"Total req: {handle.total_requests}\n"
+            f"Unique users: {len(handle.unique_users)}\n"
+        )
+
         self.send_header()
         self.end_headers()
         self.wfile.write(response.encode())
 
-        if __name__ == "__main__":
-            HTTPServer(("0.0.0.0",8003), handle).serve_forever()
+if __name__ == "__main__":
+    HTTPServer(("0.0.0.0",8000), handle).serve_forever()
